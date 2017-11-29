@@ -2,5 +2,8 @@
   "wifi": {
     "ssid": "my-ssid",
     "password": "mypassword"
+  },
+  "sensor": {
+    "pin": 14
   }
 }
