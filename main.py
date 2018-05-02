@@ -1,6 +1,7 @@
 import dht
 import json
 import machine
+import time
 from umqtt.simple import MQTTClient
 
 
@@ -15,23 +16,25 @@ sensor = dht.DHT22(machine.Pin(config['sensor']['pin']))
 rtc = machine.RTC()
 rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEPSLEEP)
 
-# Take our readings
-sensor.measure()
-temperature = sensor.temperature()
-humidity = sensor.humidity()
+while True:
+    # Take our readings
+    sensor.measure()
+    temperature = sensor.temperature()
+    humidity = sensor.humidity()
 
-print('The temperature is', temperature, '°C')
-print('The humidity is', humidity, '%')
+    print('The temperature is', temperature, '°C')
+    print('The humidity is', humidity, '%')
 
-# Establish our MQTT connection
-client = MQTTClient(config['mqtt']['user'],
-                    config['mqtt']['broker'],
-                    user=config['mqtt']['user'],
-                    password=config['mqtt']['password'],
-                    port=1883)
-client.connect()
+    # Establish our MQTT connection
+    client = MQTTClient(config['mqtt']['user'],
+                        config['mqtt']['broker'],
+                        user=config['mqtt']['user'],
+                        password=config['mqtt']['password'],
+                        port=1883)
+    client.connect()
 
-client.publish(config['mqtt']['topic'] + '/temperature', bytes(str(temperature), 'utf-8'))
-client.publish(config['mqtt']['topic'] + '/humidity', bytes(str(humidity), 'utf-8'))
+    client.publish(config['mqtt']['topic'] + '/temperature', bytes(str(temperature), 'utf-8'))
+    client.publish(config['mqtt']['topic'] + '/humidity', bytes(str(humidity), 'utf-8'))
+    client.disconnect()
 
-client.disconnect()
+    time.sleep(300)
