@@ -36,5 +36,6 @@ while True:
     client.publish(config['mqtt']['topic'] + '/temperature', bytes(str(temperature), 'utf-8'))
     client.publish(config['mqtt']['topic'] + '/humidity', bytes(str(humidity), 'utf-8'))
     client.disconnect()
+    print('Published to broker', config['mqtt']['broker'], 'on topic', config['mqtt']['topic'], 'Successfully.')
 
     time.sleep(300)
